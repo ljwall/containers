@@ -19,8 +19,31 @@ docker pull quay.io/occ_data/grads
 ```
 
 Run the container mounting the directory with your grib file to /data
+
 ```
 docker run -v $(pwd):/data --name grads -d --rm -ti grads
+```
+
+Also, providing X11 access:
+
+```
+xhost +local: // To allow permision for X11 connection
+docker run -v $(pwd):/data -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix  --name grads --rm -ti grads
+```
+
+Maybe run this after:
+
+```
+xhost -local:
+```
+
+See the [referece and tutorial](http://cola.gmu.edu/grads/gadoc/gadoc.php).
+
+to make the required `ctl` and `idx` files from a grib file run the following in the container:
+
+```
+g2ctl filename.grb > filename.ctl
+gribmap -e -i filename.ctl  // Generates gribmap file filename.grb.idx
 ```
 
 Finally here is an example of how to use GrADS to generate a geotiff file of the 2-m temperature. This example uses a GFS grib2 file called gfs.t12z.pgrb2.0p25.f003.
